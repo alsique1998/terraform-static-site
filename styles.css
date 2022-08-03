@@ -1,0 +1,23 @@
+html,
+body {
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(54, 55, 56);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+header h2 {
+  font-family: "Roboto", sans-serif;
+  color: #999;
+}
+
+img {
+  width: 18rem;
+  aspect-ratio: auto;
+}
