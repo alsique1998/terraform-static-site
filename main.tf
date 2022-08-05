@@ -6,9 +6,9 @@
 
 provider "azurerm" {
   features {}
-  client_id: "40b85944-936c-4dba-a6f1-dd574ba04454"
-  tenant_id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
-  subscription_id: "1f401e74-9897-4f2a-9b43-2991c65a3139"
+  client_id        = "40b85944-936c-4dba-a6f1-dd574ba04454"
+  tenant_id        = "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
+  subscription_id  = "1f401e74-9897-4f2a-9b43-2991c65a3139"
 }
 
 # terraform {
