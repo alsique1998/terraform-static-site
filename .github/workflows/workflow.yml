@@ -37,21 +37,21 @@ jobs:
     - name: Terraform Format
       id: terraform-fmt
       run: terraform fmt -check
-      working-directory: 'Infrastructure'
+      # working-directory: 'Infrastructure'
 
     - id: terraform-init
       name: Terraform init
-      working-directory: 'Infrastructure'
+      # working-directory: 'Infrastructure'
       run: terraform init
 
     - name: Terraform Validate
       id: terraform-validate
       run: terraform validate -no-color
-      working-directory: 'Infrastructure'
+      # working-directory: 'Infrastructure'
 
     - id: terraform-plan
       name: Terraform plan
-      working-directory: 'Infrastructure'
+      # working-directory: 'Infrastructure'
       if: github.event_name == 'pull_request'
       run: terraform plan -no-color -input=false
 
