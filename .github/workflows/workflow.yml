@@ -21,11 +21,11 @@ jobs:
         name: "Checkout self"
 
       - name: "Az CLI login"
-      uses: azure/login@v1
-      with:
-        client-id: "40b85944-936c-4dba-a6f1-dd574ba04454"
-        tenant-id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
-        subscription-id: "1f401e74-9897-4f2a-9b43-2991c65a3139"
+        uses: azure/login@v1
+        with:
+          client-id: "40b85944-936c-4dba-a6f1-dd574ba04454"
+          tenant-id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
+          subscription-id: "1f401e74-9897-4f2a-9b43-2991c65a3139"
 
       - name: Configure Terraform
         uses: hashicorp/setup-terraform@v2
@@ -107,8 +107,6 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
         # working-directory: '.'
-
-      
 
   # deploy:
   #   # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
