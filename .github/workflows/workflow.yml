@@ -85,7 +85,9 @@ jobs:
       # - name: Terraform Plan Status
       #   if: steps.terraform-plan.outcome == 'failure'
       #   run: exit 1
+      
       - uses: actions/checkout@v2
+      
       # - name: Install Azure cli
       #   run: |
       #     sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
@@ -94,6 +96,11 @@ jobs:
       #     echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
       #     sudo apt-get update
       #     sudo apt-get install azure-cli
+      
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
+        # working-directory: '.'
 
       - name: "Az CLI login"
         uses: azure/login@v1
@@ -101,11 +108,6 @@ jobs:
           client-id: "40b85944-936c-4dba-a6f1-dd574ba04454"
           tenant-id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
           subscription-id: "1f401e74-9897-4f2a-9b43-2991c65a3139"
-
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false
-        # working-directory: '.'
 
   # deploy:
   #   # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
