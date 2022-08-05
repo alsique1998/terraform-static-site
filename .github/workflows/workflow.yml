@@ -56,7 +56,7 @@ jobs:
       run: terraform plan -no-color -input=false
 
     - name: Zip site artifact using PowerShell
-      run: Compress-Archive ${{ github.workspace }}/src/* index.zip
+      run: Compress-Archive -Update ${{ github.workspace }}/src/* index.zip
       shell: pwsh
       # if: ${{ !startsWith(github.ref, 'refs/pull/') }}
         
