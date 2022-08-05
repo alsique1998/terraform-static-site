@@ -12,7 +12,7 @@ on:
 jobs:
   infrastructure:
     name: Infrastructure
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         name: "Checkout self"
@@ -94,6 +94,7 @@ jobs:
       - name: "Az CLI login"
         uses: azure/login@v1
         with:
+          azcliversion: 2.30.0
           # client-id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
           tenant-id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
           subscription-id: "1f401e74-9897-4f2a-9b43-2991c65a3139"
@@ -120,7 +121,7 @@ jobs:
   #   - name: 'Az CLI login'
   #     uses: azure/login@v1
   #     with:
-  #       client-id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
+  #       client-id: "40b85944-936c-4dba-a6f1-dd574ba04454"
   #       tenant-id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
   #       subscription-id: "1f401e74-9897-4f2a-9b43-2991c65a3139"
   # - name: 'Run Azure Functions Action'
