@@ -56,9 +56,9 @@ jobs:
       run: terraform plan -no-color -input=false
 
     - name: Zip site artifact using PowerShell
-        run: Compress-Archive ${{ github.workspace }}/src/* index.zip
-        shell: pwsh
-        # if: ${{ !startsWith(github.ref, 'refs/pull/') }}
+      run: Compress-Archive ${{ github.workspace }}/src/* index.zip
+      shell: pwsh
+      # if: ${{ !startsWith(github.ref, 'refs/pull/') }}
         
     - name: Publishing Build Artifact
       uses: actions/upload-artifact@v2
