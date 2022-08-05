@@ -1,0 +1,127 @@
+# - id: terraform-source-config
+#   uses: ExxonMobil/actions-terraform-config@v0
+#   with:
+#     source: "git"
+#     git_token: ${{ secrets.GH_PAT }}
+
+# - name: Clean up
+#   shell: bash
+#   run: git config --global --unset http.extraheader &> /dev/null || true
+name: "Deploy application"
+
+# concurrency: test_workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  infrastructure:
+    name: Infrastructure
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      name: "Checkout self"
+
+    - name: Configure Terraform
+      uses: hashicorp/setup-terraform@v2
+      # with:
+      #   cli_config_credentials_hostname: "terraform.xom.cloud"
+      #   cli_config_credentials_token: "${{ secrets.TFE_TOKEN }}"
+
+    - name: Terraform Format
+      id: terraform-fmt
+      run: terraform fmt -check
+      working-directory: 'Infrastructure'
+
+    - id: terraform-init
+      name: Terraform init
+      working-directory: 'Infrastructure'
+      run: terraform init
+
+    - name: Terraform Validate
+      id: terraform-validate
+      run: terraform validate -no-color
+      working-directory: 'Infrastructure'
+
+    - id: terraform-plan
+      name: Terraform plan
+      working-directory: 'Infrastructure'
+      if: github.event_name == 'pull_request'
+      run: terraform plan -no-color -input=false
+
+    - name: Zip site artifact using PowerShell
+        run: Compress-Archive ${{ github.workspace }}/src/* index.zip
+        shell: pwsh
+        # if: ${{ !startsWith(github.ref, 'refs/pull/') }}
+        
+    - name: Publishing Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        path: index.zip
+        name: index
+
+    # - name: Update Pull Request
+    #   uses: actions/github-script@v6
+    #   if: github.event_name == 'pull_request'
+    #   env:
+    #     PLAN: "terraform\n${{ steps.terraform-plan.outputs.stdout }}"
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    #     script: |
+    #       const output = `#### Terraform Format and Style 🖌\`${{ steps.terraform-fmt.outcome }}\`
+    #       #### Terraform Initialization ⚙️\`${{ steps.terraform-init.outcome }}\`
+    #       #### Terraform Plan 📖\`${{ steps.terraform-plan.outcome }}\`
+    #       #### Terraform Validation 🤖\`${{ steps.terraform-validate.outcome }}\`
+    #       <details><summary>Show Plan</summary>
+    #       \`\`\`\n
+    #       ${process.env.PLAN}
+    #       \`\`\`
+    #       </details>
+    #       *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+    #       github.rest.issues.createComment({
+    #         issue_number: context.issue.number,
+    #         owner: context.repo.owner,
+    #         repo: context.repo.repo,
+    #         body: output
+    #       })
+    # - name: Terraform Plan Status
+    #   if: steps.terraform-plan.outcome == 'failure'
+    #   run: exit 1
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve -input=false
+      # working-directory: '.'
+
+  # deploy:
+  #   # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #   needs: infrastructure
+  #   runs-on: ubuntu-latest
+  #   name: Deploy function app
+  #   permissions:
+  #     id-token: write
+  #     contents: read
+  #   # env:
+  #   #   AZURE_FUNCTIONAPP_NAME: terraform-enterprise-automations-fa
+  #   #   AZURE_FUNCTIONAPP_PACKAGE_PATH: './Functions'
+  #   steps:
+  #   # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+  #   - uses: actions/checkout@v2
+  #   - name: 'Az CLI login'
+  #     uses: azure/login@v1
+  #     with:
+  #       client-id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
+  #       tenant-id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
+  #       subscription-id: "1f401e74-9897-4f2a-9b43-2991c65a3139"
+    # - name: 'Run Azure Functions Action'
+    #   uses: Azure/functions-action@v1
+    #   id: fa
+    #   with:
+    #     app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+    #     package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}

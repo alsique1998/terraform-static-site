@@ -1,9 +1,0 @@
-- id: terraform-source-config
-  uses: ExxonMobil/actions-terraform-config@v0
-  with:
-    source: "git"
-    git_token: ${{ secrets.GH_PAT }}
-
-- name: Clean up
-  shell: bash
-  run: git config --global --unset http.extraheader &> /dev/null || true
