@@ -44,7 +44,7 @@ jobs:
       - id: terraform-plan
         name: Terraform plan
         # working-directory: 'Infrastructure'
-        if: github.event_name == 'pull_request'
+        # if: github.event_name == 'pull_request'
         run: terraform plan -no-color -input=false
 
       - name: Zip site artifact using PowerShell
@@ -58,36 +58,36 @@ jobs:
           path: index.zip
           name: index
 
-      # - name: Update Pull Request
-      #   uses: actions/github-script@v6
-      #   if: github.event_name == 'pull_request'
-      #   env:
-      #     PLAN: "terraform\n${{ steps.terraform-plan.outputs.stdout }}"
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     script: |
-      #       const output = `#### Terraform Format and Style 🖌\`${{ steps.terraform-fmt.outcome }}\`
-      #       #### Terraform Initialization ⚙️\`${{ steps.terraform-init.outcome }}\`
-      #       #### Terraform Plan 📖\`${{ steps.terraform-plan.outcome }}\`
-      #       #### Terraform Validation 🤖\`${{ steps.terraform-validate.outcome }}\`
-      #       <details><summary>Show Plan</summary>
-      #       \`\`\`\n
-      #       ${process.env.PLAN}
-      #       \`\`\`
-      #       </details>
-      #       *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-      #       github.rest.issues.createComment({
-      #         issue_number: context.issue.number,
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         body: output
-      #       })
-      # - name: Terraform Plan Status
-      #   if: steps.terraform-plan.outcome == 'failure'
-      #   run: exit 1
-      
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.terraform-plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.terraform-fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.terraform-init.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.terraform-plan.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.terraform-validate.outcome }}\`
+            <details><summary>Show Plan</summary>
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+            </details>
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+      - name: Terraform Plan Status
+        if: steps.terraform-plan.outcome == 'failure'
+        run: exit 1
+
       - uses: actions/checkout@v2
-      
+
       # - name: Install Azure cli
       #   run: |
       #     sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
@@ -96,7 +96,6 @@ jobs:
       #     echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
       #     sudo apt-get update
       #     sudo apt-get install azure-cli
-      
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
