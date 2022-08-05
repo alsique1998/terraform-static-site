@@ -20,21 +20,21 @@ jobs:
       - uses: actions/checkout@v2
         name: "Checkout self"
 
-      - name: Install Azure cli
-        run: |
-          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
-          curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-          AZ_REPO=$(lsb_release -cs)
-          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-          sudo apt-get update
-          sudo apt-get install azure-cli
+      # - name: Install Azure cli
+      #   run: |
+      #     sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
+      #     curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+      #     AZ_REPO=$(lsb_release -cs)
+      #     echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+      #     sudo apt-get update
+      #     sudo apt-get install azure-cli
 
-      - name: "Az CLI login"
-        uses: azure/login@v1
-        with:
-          client-id: "40b85944-936c-4dba-a6f1-dd574ba04454"
-          tenant-id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
-          subscription-id: "1f401e74-9897-4f2a-9b43-2991c65a3139"
+      # - name: "Az CLI login"
+      #   uses: azure/login@v1
+      #   with:
+      #     client-id: "40b85944-936c-4dba-a6f1-dd574ba04454"
+      #     tenant-id: "d1ee1acd-bc7a-4bc4-a787-938c49a83906"
+      #     subscription-id: "1f401e74-9897-4f2a-9b43-2991c65a3139"
       # - name: Azure CLI login
       #   run: |
       #     az login --tenant d1ee1acd-bc7a-4bc4-a787-938c49a83906
